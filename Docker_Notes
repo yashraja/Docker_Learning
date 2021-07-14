@@ -75,4 +75,50 @@ Storages:
       Above readonly will not allow containers to edit the volumes!
    
       
-
+Docker File:
+CMD: docker image build -t <image-name (name)>:<v1 (tag)> .         [ "." represents the dockerfile.txt in the current dir]
+  use the above image to build a container.
+  Order of exectution in dockerfile is LINEAR.
+    Sample dockerfile:
+    
+    # can keep comments here
+    FROM node                               [base image]
+    LABEL org.label-schema.version=v1.1     [meta data]
+    ARG SRC_DIR=/var/node                   [Just like initialize dymanic variables into a code]
+    ENV NDOE_END="dev"                      [environmental values ...
+    ENV PORT 3000                           ]
+    RUN mkdit -p $SRC_DIR                   [run cmd line args]
+    ADD src/ $SRC_DIR                       [add/copy works like same]
+    WORKDIR $SRC_DIR                        [its like cd into some dir]
+    RUN npm install                         [run cmd line args]
+    EXPOSE $PORT                            [Asking image to expose this port- taken from env values set in prior as default.We can change these values while creating containers]
+    
+    [
+    RUN useradd -ms /bin/bash new_user      [This will create a new user called "new_user" and all the steps next in line will be run under this user]
+    USER new_user 
+    
+    VOLUME ["/USR/SHARE/...", "others"]     [Accepts string or array of strings]
+    
+    ENTRYPOINT  ["/bin/asa"]                ["immutable]
+    ]
+    
+    CMD ./bin/www                           [Can only be one cmd in the entire dockerfile. Can be overridden. Array]
+    
+    
+    
+  Sample container build cmd: docker container run -d --name somename -p 8082:3001 --env PORT=3001 abc-image:v2
+  [--build-arg SRC_DIR=/var/code    we can change the args using this]
+  Above we are setting port to 3001 [instead of default 3000 as per docker file] and using -p we can talk with 3001 port inside container with 8082 port from our local.
+  
+  docker container exec -u 0 -it <container_name> /bin/bash  [This will execute the command as a ROOT user --> 0 means root]
+  
+  
+  
+  Docker Ignore file:   -->   vi .dockerignore
+      # Ignore comments
+      */*.md
+      */.git
+      src/docs
+      */tests/
+      *Readme.md
+  
